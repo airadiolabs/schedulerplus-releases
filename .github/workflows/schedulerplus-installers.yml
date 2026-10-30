@@ -1,13 +1,14 @@
 name: Scheduler{+} installers
 
-# Builds Scheduler{+}'s installers for Linux, macOS and Windows from the
+# Builds Scheduler{+}'s Linux and Windows installers from the
 # private source repo (airadiolabs/musiccraft, read through the read-only
 # deploy key SCHEDULERPLUS_DEPLOY_KEY) and attaches them to the release
 # schedulerplus-vX.Y.Z here. Runs here because this repo is public, so
 # Actions minutes are free. No source code is stored in this repo.
 #
-# A missing release is created as a DRAFT; publish it once every installer
-# is attached and has been tried.
+# A missing release is created as a DRAFT. The signed and notarized macOS
+# DMGs are built on a Mac (scripts/bundle there, with the APPLE_* variables
+# set) and attached by hand; then publish the draft.
 on:
   workflow_dispatch:
     inputs:
@@ -27,8 +28,6 @@ jobs:
           # 22.04: the oldest supported Ubuntu, so the builds run on newer ones too
           - { os: ubuntu-22.04, target: x86_64-unknown-linux-gnu, name: linux-x86_64 }
           - { os: ubuntu-22.04-arm, target: aarch64-unknown-linux-gnu, name: linux-arm64 }
-          - { os: macos-latest, target: aarch64-apple-darwin, name: macos-arm64 }
-          - { os: macos-latest, target: x86_64-apple-darwin, name: macos-x86_64 }
           - { os: windows-latest, target: x86_64-pc-windows-msvc, name: windows-x86_64 }
     runs-on: ${{ matrix.os }}
     outputs:
@@ -70,22 +69,7 @@ jobs:
         env:
           # linuxdeploy (AppImage) runs without FUSE on the runners
           APPIMAGE_EXTRACT_AND_RUN: 1
-          # macOS: Tauri imports the Developer ID certificate into a temporary
-          # keychain, signs the app and the CLI beside it with the hardened
-          # runtime, and notarizes and staples the result. Without
-          # APPLE_CERTIFICATE the build is unsigned.
-          APPLE_CERTIFICATE: ${{ runner.os == 'macOS' && secrets.APPLE_CERTIFICATE || '' }}
-          APPLE_CERTIFICATE_PASSWORD: ${{ runner.os == 'macOS' && secrets.APPLE_CERTIFICATE_PASSWORD || '' }}
-          APPLE_SIGNING_IDENTITY: ${{ runner.os == 'macOS' && secrets.APPLE_CERTIFICATE != '' && secrets.APPLE_SIGNING_IDENTITY || '' }}
-          APPLE_ID: ${{ runner.os == 'macOS' && secrets.APPLE_CERTIFICATE != '' && secrets.APPLE_ID || '' }}
-          APPLE_PASSWORD: ${{ runner.os == 'macOS' && secrets.APPLE_CERTIFICATE != '' && secrets.APPLE_PASSWORD || '' }}
-          APPLE_TEAM_ID: ${{ runner.os == 'macOS' && secrets.APPLE_CERTIFICATE != '' && secrets.APPLE_TEAM_ID || '' }}
-        run: |
-          # an empty variable still counts as set for Tauri: drop the empty ones
-          for v in APPLE_CERTIFICATE APPLE_CERTIFICATE_PASSWORD APPLE_SIGNING_IDENTITY APPLE_ID APPLE_PASSWORD APPLE_TEAM_ID; do
-            [ -n "${!v}" ] || unset "$v"
-          done
-          scripts/bundle --target ${{ matrix.target }}
+        run: scripts/bundle --target ${{ matrix.target }}
 
       - name: Collect and name the installers
         shell: bash
@@ -100,7 +84,6 @@ jobs:
           for f in "$b"/deb/*.deb; do cp "$f" "out/$base.deb"; done
           for f in "$b"/rpm/*.rpm; do cp "$f" "out/$base.rpm"; done
           for f in "$b"/appimage/*.AppImage; do cp "$f" "out/$base.AppImage"; done
-          for f in "$b"/dmg/*.dmg; do cp "$f" "out/$base.dmg"; done
           for f in "$b"/msi/*.msi; do cp "$f" "out/$base.msi"; done
           for f in "$b"/nsis/*-setup.exe; do cp "$f" "out/$base-setup.exe"; done
           ls -l out

@@ -21,13 +21,12 @@ This repository holds the published builds. Download them from
 
 ## First launch
 
-The test builds are not code-signed yet.
+The macOS builds are signed and notarized; the Linux and Windows builds are not code-signed yet.
 
 - **Linux:** install the `.deb` (Debian, Ubuntu) or `.rpm` (Fedora, openSUSE), or make the
   `.AppImage` executable and run it. Scheduled tasks need the `.deb` or `.rpm`, which put the
   `schedulerplus` command in a fixed place.
-- **macOS:** open the `.dmg` and drag Scheduler{+} to Applications. The first time, right-click it
-  and choose **Open**, then **Open** again (or allow it under System Settings → Privacy & Security).
+- **macOS:** open the `.dmg` and drag Scheduler{+} to Applications.
 - **Windows:** run the setup program. If SmartScreen appears, choose **More info** →
   **Run anyway**.
 
