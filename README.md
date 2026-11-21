@@ -13,20 +13,22 @@ This repository holds the published builds. Download them from
 |---|---|
 | Linux, x86_64 | `schedulerplus-<version>-linux-x86_64.deb`, `.rpm` or `.AppImage` |
 | Linux, ARM64 | `schedulerplus-<version>-linux-arm64.deb`, `.rpm` or `.AppImage` |
-| macOS, Apple silicon | `schedulerplus-<version>-macos-arm64.dmg` |
-| macOS, Intel | `schedulerplus-<version>-macos-x86_64.dmg` |
+| macOS 11 or later, Apple silicon and Intel | `schedulerplus-<version>-macos-universal.dmg` |
 | Windows, x86_64 | `schedulerplus-<version>-windows-x86_64-setup.exe` or `.msi` |
 
 `SHA256SUMS.txt` lists the checksums.
 
 ## First launch
 
-The macOS builds are signed and notarized; the Linux and Windows builds are not code-signed yet.
+The builds are not code-signed yet (the macOS one is not notarized either).
 
 - **Linux:** install the `.deb` (Debian, Ubuntu) or `.rpm` (Fedora, openSUSE), or make the
   `.AppImage` executable and run it. Scheduled tasks need the `.deb` or `.rpm`, which put the
   `schedulerplus` command in a fixed place.
-- **macOS:** open the `.dmg` and drag Scheduler{+} to Applications.
+- **macOS:** open the `.dmg` and drag Scheduler{+} Native to Applications. The first time, macOS
+  refuses to open it: open **System Settings** → **Privacy & Security**, and choose
+  **Open Anyway** next to the message about Scheduler{+} Native. It opens normally after that.
+  The macOS build is the new native interface, a preview: it works on the same station files.
 - **Windows:** run the setup program. If SmartScreen appears, choose **More info** →
   **Run anyway**.
 
