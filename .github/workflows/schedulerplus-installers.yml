@@ -1,7 +1,7 @@
 name: Scheduler{+} installers
 
 # Builds Scheduler{+}'s Linux and Windows installers from the
-# private source repo (airadiolabs/musiccraft, read through the read-only
+# private source repo (airadiolabs/schedulerplus, read through the read-only
 # deploy key SCHEDULERPLUS_DEPLOY_KEY) and attaches them to the release
 # schedulerplus-vX.Y.Z here. Runs here because this repo is public, so
 # Actions minutes are free. No source code is stored in this repo.
@@ -35,7 +35,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          repository: airadiolabs/musiccraft
+          repository: airadiolabs/schedulerplus
           ref: ${{ inputs.ref }}
           ssh-key: ${{ secrets.SCHEDULERPLUS_DEPLOY_KEY }}
 
